@@ -11,8 +11,10 @@ const form = document.querySelector("form");
 const input = form.querySelector("input");
 const submitButton = form.querySelector("[type='submit']");
 
-const list = createList();
 const prompt = document.querySelector("#prompt");
+
+const list = createList();
+const clearButton = createClearButton();
 
 //
 // Functions
@@ -20,15 +22,18 @@ const prompt = document.querySelector("#prompt");
 
 function render() {
   const listItems = data.map(createListItem);
-  list.append(...listItems);
 
   if (listItems.length > 0) {
-    const clearButton = createClearButton();
-    submitButton.after(clearButton);
-    prompt.replaceWith(list);
+    list.append(...listItems);
+    renderList();
   }
 
   setData(data);
+}
+
+function renderList() {
+  submitButton.after(clearButton);
+  prompt.replaceWith(list);
 }
 
 function handleSubmit(event) {
@@ -48,9 +53,7 @@ function handleSubmit(event) {
   input.value = "";
 
   if (data.length === 1) {
-    const clearButton = createClearButton();
-    submitButton.after(clearButton);
-    prompt.replaceWith(list);
+    renderList();
   }
 }
 
@@ -72,6 +75,7 @@ function handleClick(event) {
   setData(data);
 
   event.target.remove();
+
   list.innerHTML = "";
   list.replaceWith(prompt);
 }
