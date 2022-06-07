@@ -1,3 +1,9 @@
+function createList() {
+  const list = document.createElement("ul");
+  list.setAttribute("role", "list");
+  return list;
+}
+
 function createListItem(toDo, index) {
   const listItem = document.createElement("li");
   const input = document.createElement("input");
@@ -19,10 +25,10 @@ function createClearButton() {
   const button = document.createElement("button");
 
   button.type = "button";
-  button.textContent = "Clear";
+  button.textContent = "Clear list";
   button.dataset.action = "clear";
 
   return button;
 }
 
-export { createListItem, createClearButton };
+export { createList, createListItem, createClearButton };
