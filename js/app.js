@@ -1,10 +1,11 @@
 import { getData, setData } from "./storage.js";
+import { createListItem, createClearButton } from "./elems.js";
 
 //
 // Variables
 //
 
-const data = getData();
+let data = getData();
 
 const form = document.querySelector("form");
 const input = form.querySelector("input");
@@ -17,7 +18,13 @@ const list = document.querySelector("ul");
 
 function render() {
   const listItems = data.map(createListItem);
-  list.append(...listItems);
+
+  if (listItems.length > 0) {
+    const clearButton = createClearButton();
+    list.append(...listItems);
+    list.after(clearButton);
+  }
+
   setData(data);
 }
 
@@ -36,6 +43,11 @@ function handleSubmit(event) {
   list.append(listItem);
 
   input.value = "";
+
+  if (data.length === 1) {
+    const clearButton = createClearButton();
+    list.after(clearButton);
+  }
 }
 
 function handleChange(event) {
@@ -44,21 +56,19 @@ function handleChange(event) {
   setData(data);
 }
 
-function createListItem(toDo, index) {
-  const listItem = document.createElement("li");
-  const input = document.createElement("input");
-  const label = document.createElement("label");
+function handleClick(event) {
+  const { action } = event.target.dataset;
+  if (action !== "clear") return;
 
-  input.type = "checkbox";
-  input.id = `todo-${index}`;
-  input.dataset.index = index;
-  input.defaultChecked = toDo.done;
+  const prompt = "Are you sure you want to clear your to-do list?";
+  const confirmClear = window.confirm(prompt);
+  if (!confirmClear) return;
 
-  label.htmlFor = input.id;
-  label.textContent = toDo.name;
+  data = [];
+  setData(data);
 
-  listItem.append(input, label);
-  return listItem;
+  list.innerHTML = "";
+  event.target.remove();
 }
 
 //
@@ -69,3 +79,4 @@ render();
 
 form.addEventListener("submit", handleSubmit);
 list.addEventListener("change", handleChange);
+document.body.addEventListener("click", handleClick);

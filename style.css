@@ -22,20 +22,27 @@ form input {
   width: 100%;
 }
 
-input,
+input:not([type="checkbox"]),
 button {
+  padding: 0.375em 0.75em;
   font: inherit;
 }
 
 [role="list"] {
   padding: 0;
+  margin: 2em 0;
   list-style: none;
+}
+
+li + li {
+  margin-top: 1em;
 }
 
 :checked + label {
   text-decoration: line-through;
 }
 
+/* https://ar.al/2021/08/24/implementing-dark-mode-in-a-handful-of-lines-of-css-with-css-filters/ */
 @media (prefers-color-scheme: dark) {
   html {
     background: #000;
