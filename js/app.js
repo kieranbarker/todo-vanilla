@@ -1,20 +1,26 @@
-import { getData, setData } from "./storage.js";
-import { createList, createListItem, createClearButton } from "./elems.js";
+import { getStorage, setStorage } from "./storage.js";
+import {
+  createForm,
+  createPrompt,
+  createList,
+  createListItem,
+  createClearButton,
+} from "./elems.js";
 
 //
 // Variables
 //
 
-let data = getData();
+let data = getStorage();
 
-const form = document.querySelector("form");
-const input = form.querySelector("input");
-const submitButton = form.querySelector("[type='submit']");
+const app = document.querySelector("#app");
 
-const prompt = document.querySelector("#prompt");
+const form = createForm();
+const [input, submitButton] = form.elements;
 
-const list = createList();
 const clearButton = createClearButton();
+const prompt = createPrompt();
+const list = createList();
 
 //
 // Functions
@@ -23,17 +29,27 @@ const clearButton = createClearButton();
 function render() {
   const listItems = data.map(createListItem);
 
-  if (listItems.length > 0) {
+  app.replaceChildren(form);
+
+  if (listItems.length < 1) {
+    app.append(prompt);
+  } else {
     list.append(...listItems);
     renderList();
   }
 
-  setData(data);
+  setStorage(data);
 }
 
 function renderList() {
   submitButton.after(clearButton);
-  prompt.replaceWith(list);
+
+  if (app.contains(prompt)) {
+    prompt.replaceWith(list);
+    return;
+  }
+
+  app.append(list);
 }
 
 function handleSubmit(event) {
@@ -45,7 +61,7 @@ function handleSubmit(event) {
   const toDo = { name: value, done: false };
 
   data.push(toDo);
-  setData(data);
+  setStorage(data);
 
   const listItem = createListItem(toDo, data.length - 1);
   list.append(listItem);
@@ -60,21 +76,20 @@ function handleSubmit(event) {
 function handleChange(event) {
   const { index } = event.target.dataset;
   data[index].done = event.target.checked;
-  setData(data);
+  setStorage(data);
 }
 
 function handleClick(event) {
-  const { action } = event.target.dataset;
-  if (action !== "clear") return;
+  if (clearButton !== event.target) return;
 
   const message = "Are you sure you want to clear your to-do list?";
   const confirmClear = window.confirm(message);
   if (!confirmClear) return;
 
-  data = [];
-  setData(data);
+  clearButton.remove();
 
-  event.target.remove();
+  data = [];
+  setStorage(data);
 
   list.innerHTML = "";
   list.replaceWith(prompt);

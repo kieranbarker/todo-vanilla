@@ -1,6 +1,6 @@
 const storageKey = "todo-vanilla";
 
-function getData() {
+function getStorage() {
   const data = localStorage.getItem(storageKey);
 
   if (data) {
@@ -10,8 +10,8 @@ function getData() {
   return [];
 }
 
-function setData(data) {
+function setStorage(data) {
   localStorage.setItem(storageKey, JSON.stringify(data));
 }
 
-export { getData, setData };
+export { getStorage, setStorage };

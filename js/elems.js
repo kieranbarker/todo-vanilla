@@ -1,34 +1,72 @@
+const parser = new DOMParser();
+
+function stringToHTML(str) {
+  const doc = parser.parseFromString(str, "text/html");
+
+  if (doc.body.childNodes.length === 1) {
+    return doc.body.firstChild;
+  }
+
+  const fragment = document.createDocumentFragment();
+  fragment.append(...doc.body.childNodes);
+
+  return fragment;
+}
+
+function createForm() {
+  const form = `
+    <form>
+      <p>
+        <label for="to-do">What do you need to do?</label>
+        <input id="to-do" type="text" required="">
+      </p>
+      <p>
+        <button type="submit">Add to-do</button>
+      </p>
+    </form>
+  `;
+
+  return stringToHTML(form.trim());
+}
+
+function createPrompt() {
+  const prompt = `
+    <p>
+      <em>Add some to-dos...</em>
+    </p>
+  `;
+
+  return stringToHTML(prompt.trim());
+}
+
 function createList() {
-  const list = document.createElement("ul");
-  list.setAttribute("role", "list");
-  return list;
+  const list = "<ul role='list'></ul>";
+  return stringToHTML(list);
 }
 
 function createListItem(toDo, index) {
-  const listItem = document.createElement("li");
-  const input = document.createElement("input");
-  const label = document.createElement("label");
+  const id = `todo-${index}`;
+  const checked = toDo.done ? "checked" : "";
 
-  input.type = "checkbox";
-  input.id = `todo-${index}`;
-  input.dataset.index = index;
-  input.defaultChecked = toDo.done;
+  const listItem = `
+    <li>
+      <input type="checkbox" id="${id}" data-index="${index}" ${checked} />
+      <label for="${id}">${toDo.name}</label>
+    </li>
+  `;
 
-  label.htmlFor = input.id;
-  label.textContent = toDo.name;
-
-  listItem.append(input, label);
-  return listItem;
+  return stringToHTML(listItem.trim());
 }
 
 function createClearButton() {
-  const button = document.createElement("button");
-
-  button.type = "button";
-  button.textContent = "Clear list";
-  button.dataset.action = "clear";
-
-  return button;
+  const button = "<button type='button'>Clear list</button>";
+  return stringToHTML(button);
 }
 
-export { createList, createListItem, createClearButton };
+export {
+  createForm,
+  createPrompt,
+  createList,
+  createListItem,
+  createClearButton,
+};
