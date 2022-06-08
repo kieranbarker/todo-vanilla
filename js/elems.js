@@ -18,7 +18,7 @@ function createForm() {
     <form>
       <p>
         <label for="to-do">What do you need to do?</label>
-        <input id="to-do" type="text" required="">
+        <input id="to-do" type="text" required />
       </p>
       <p>
         <button type="submit">Add to-do</button>
